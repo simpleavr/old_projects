@@ -1,47 +1,52 @@
-:h2 EZ430Trainer
+## EZ430Trainer
 
-b(A Retro Style Basic Computer.)
-:pre
-:p
-:code
 
-R([December, 2012]) Initial write-up.
-R([Dec 9th, 2012]) entered as november / december project of month contest in 43oh.com.
+**A Retro Style Basic Computer.**
+
+
+`[December, 2012]` Initial write-up.
+
+`[Dec 9th, 2012]` entered as november / december project of month contest in 43oh.com.
+
  http://forum.43oh.com/topic/2839-open-nov-dec-2012-43oh-project-of-the-month-contest/
+
 
  (c) chris chung 2012.12.10
 
-:i ez_trainer.jpg
+
+ <img src="images/ez_trainer.jpg" alt="IMG" style="border:2px solid #555;margin-right:10px" width="360"/>
 
 
-(*) B(this project can only be built with msp430gcc ,cygwin or linux), i had made attempt to build it under CCS but it proved to me very difficult as there are assembly elements and memory mapping issues. there is, however a reduced c source file to build just the LMC machine.)
+
+(*) `this project can only be built with msp430gcc ,cygwin or linux`, i had made attempt to build it under CCS but it proved to me very difficult as there are assembly elements and memory mapping issues. there is, however a reduced c source file to build just the LMC machine.)
 
 
-:h3 Description
 
-        The EZ430trainer system turns the low-cost TI LaunchPad into a microcontroller trainer via simple hardware and software enrichments.
+### Description
 
-        The EZ430trainer is made up of a
-        . TI LaunchPad, w/ msp430g2553 mcu
-        . A "Paradiso UI Shield", adding basic I/O capabilites.
-        . A "Eztrainer Monitor" firmware, providing monitor and assembler capabilites.
+The EZ430trainer system turns the low-cost TI LaunchPad into a microcontroller trainer via simple hardware and software enrichments.
 
-        The intention of the EZ430trainer is to bring in a "low-cost" computer training system that resembles the 1st generation hobby based microprocessor systems that surfaced in the mid-70's. These systems offer the best computer training as users interacts w/ the CPU almost directly. Programming are done via entering machine code directly or via simple assemblers. Users need to understand very well the cpu architecture in order to work on such systems.
+The EZ430trainer is made up of a
+
+- TI LaunchPad, w/ msp430g2553 mcu
+- A "Paradiso UI Shield", adding basic I/O capabilites.
+- A "Eztrainer Monitor" firmware, providing monitor and assembler capabilites.
+
+The intention of the EZ430trainer is to bring in a "low-cost" computer training system that resembles the 1st generation hobby based microprocessor systems that surfaced in the mid-70's. These systems offer the best computer training as users interacts w/ the CPU almost directly. Programming are done via entering machine code directly or via simple assemblers. Users need to understand very well the cpu architecture in order to work on such systems.
 
 Parts / Bill of Materials
 
-        . TI Launchpad V1.5 kit (w/ msp430g2553 mcu)
-        . 4 digit 7 segment LED display Common Anode
-        . 4 digit 7 segment LED display Common Cathode
-        . 20 x tactile button
-        . buzzer 3V (Optional)
+- TI Launchpad V1.5 kit (w/ msp430g2553 mcu)
+- 4 digit 7 segment LED display Common Anode
+- 4 digit 7 segment LED display Common Cathode
+- 20 x tactile button
+- buzzer 3V (Optional)
 
 
+the LED display is commonly available in ebay, look for those 0.4" or 0.36" 4 digit displays, you will want to make sure it's common cathode and the pin layout matches (most do)
 
 
-
-        the LED display is commonly available in ebay, look for those 0.4" or 0.36" 4 digit displays, you will want to make sure it's common cathode and the pin layout matches (most do)
-
+```
        ___a__
       |      |        (0) A  F (1)(2) B
      f|      | b      -+--+--+--+--+--+
@@ -49,9 +54,12 @@ Parts / Bill of Materials
      e|      | c     |Pin1             |
       |      |        -+--+--+--+--+--+
        ___d__          E  D  .  C  G (3)
+```
+
+### Paradiso UI Shield Schematic
 
 
-:h3 Paradiso UI Shield Schematic
+```
 
                MSP430G2553 on TI Launchpad
              -----------------
@@ -84,12 +92,8 @@ Parts / Bill of Materials
             |   segment H P1.5|-o o-+           (not all buttons populated)
             |                 |
              -----------------
-
-
-
-
-
-   mapping of buttons. Ex. A-F .. buon across segment A and F pins
+ 
+	mapping of buttons. Ex. A-F .. buon across segment A and F pins
 
                 [A-F] [A-.] [A-G] [B-A] [D-A] [C-A]
 
@@ -115,34 +119,48 @@ Parts / Bill of Materials
           |                [0 ] [A ] [B ] [C ] [+ ] | Advance / Enter
           |                                         |
           +-----------------------------------------+
+```
+### Paradiso UI Shield features
 
-:h3 Paradiso UI Shield features
+- 8 x 7 segment display
+- 22 tactile switch positions w/ 20 switch filled
+- Prototyping area
+- requires software mutliplexing to drive segments
+- requires software matrix scanning for key inputs
+- has no led driving / current limiting capabilities
 
-        . 8 x 7 segment display
-        . 22 tactile switch positions w/ 20 switch filled
-        . Prototyping area
-        . requires software mutliplexing to drive segments
-        . requires software matrix scanning for key inputs
-        . has no led driving / current limiting capabilities
-
-:h3 EZ430trainer Monitor features
-
-    . (1) LMC Little Man Computer emulator built-in
-    . (2) One-pass assembler generating msp430 machine code
-    . (3) Direct machine code entry for msp430
-    . Correct support for pseudo-op codes, ex. RET implemented as MOV @SP+,PC
-    . Interface w/ Paradiso UI Shield and UART terminal
-    . Program storage starts at flash 0xe000 at 256 byte blocks
-    . Program edit at ram 0x0280 for each 256 byte blocks
-    . Basic IO routines
-      . number printing
-      . string printing
-      . wait key w/
-      . timer at 1/100 sec intervals
+### EZ430trainer Monitor features
 
 
-:h3 Memory Space
+- (1) LMC Little Man Computer emulator built-in
 
+- (2) One-pass assembler generating msp430 machine code
+
+- (3) Direct machine code entry for msp430
+
+- Correct support for pseudo-op codes, ex. RET implemented as MOV @SP+,PC
+
+- Interface w/ Paradiso UI Shield and UART terminal
+
+- Program storage starts at flash 0xe000 at 256 byte blocks
+
+- Program edit at ram 0x0280 for each 256 byte blocks
+
+- Basic IO routines
+
+  * number printing
+
+  * string printing
+
+  * wait key w/
+
+  * timer at 1/100 sec intervals
+
+
+
+### Memory Space
+
+```
           +------------------------------------------------+
           |0x0000-0x0007   Special Func Registers          |
           |0x0008-0x00ff    8-bit Periphercals             |
@@ -168,11 +186,13 @@ Parts / Bill of Materials
           |  ffc0-  ffff | Interrupt Vectors               |
           |       0xffff +---------------------------------|
           +------------------------------------------------+
+```
+<iframe width="560" height="315" src="https://www.youtube.com/embed/BDqhotMs" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+<br><br>
 
-:v BDqhotMs-S4
+### EZ430Trainer Monitor Power Up
 
-:h3 EZ430Trainer Monitor Power Up
-
+```
           We 1st need to familiarize w/ the EZ430Trainer keypad
 
                   |                mnp  rtx  s    j         |
@@ -239,9 +259,10 @@ Parts / Bill of Materials
                                     E000  mod
           [+ ]                      ???? ????  modifies msp430 program in bank 0
 
+```
+### Entering and running a LMC program
 
-:h3 Entering and running a LMC program
-
+```
           There are 16 blocks of 256 byte flash memory to store and run LMC programs
           LMC instructions are entered as 3-digit decimal codes
           [+ ] and [Rg] keys can be used to navigate code positions
@@ -283,9 +304,10 @@ Parts / Bill of Materials
                                     902    30  next instruction is to show result, 30
                                     000    30  next instruction is halt, program ends
                   press [Ad] key will return to monitor
+```
+### Entering and running a msp430 Program via assembler Op-code
 
-:h3 Entering and running a msp430 Program via assembler Op-code
-
+```
           Press Keys                Displays   Notes
           ----------------------------------------------------------------
           [Ad]                      e000 mod   select address input
@@ -358,9 +380,10 @@ Parts / Bill of Materials
                 . the dis-assmebled op-code and associated operand(s) are shown
                 . if there is not enough room to show the 2nd operand, you can press [0] to show it.
                 . ex Mov #0123,R7 is displayed as "Mov  0123", "R7       " alternatively via [0] key
+```
+### Bios
 
-:h3 Bios
-
+```
         The system bios is compiled in at memory address 0xdd00
         applications can call bios functions via op-code "call 0xdd00"
         when calling the bios;
@@ -396,14 +419,19 @@ Parts / Bill of Materials
         mov     #0x0100, r12
         call    #0xdd00
         HELLO:  .ascii "hello"
+```
+### Assembler Advance Details
 
-:h3 Assembler Advance Details
-
-        In the last section, we know how to enter a simple assembly program. First, we select the opcode, then we enter the zero, one or two operands required for the particular opcode. They are different distinct input / edit stages.
+```
+        In the last section, we know how to enter a simple assembly program. First, we select the opcode,
+		then we enter the zero, one or two operands required for the particular opcode. 
+		They are different distinct input / edit stages.
 
         The monitor tracks at what stage the input / edit is occuring and the key press are processed different at that context.
 
-        At opcode edit stage, only keys A to F, 7, 8, 9 and 6 are used. With the exception of '6', each key cycles thru a list of msp430 assembler opcode when pressed. The key '6' toggles between byte and word operands for those operations that observes it. (i.e. mov vs. mov.b)
+        At opcode edit stage, only keys A to F, 7, 8, 9 and 6 are used. With the exception of '6', 
+		each key cycles thru a list of msp430 assembler opcode when pressed. 
+		The key '6' toggles between byte and word operands for those operations that observes it. (i.e. mov vs. mov.b)
 
         7 (m,n,p) ..  mov, nop, pop, push
         8 (r+) .....  ret, reti, rla, rlc, rra, rrc, tst, xor
@@ -424,7 +452,9 @@ Parts / Bill of Materials
           [6]                       addb r7r7  '6' toggles to byte mode, now it's add.b
           [+]                       addb r7r7  confirm "add" operation
 
-        At operand edit stage, the pressing numeric keys 0..F allows for direct input of vales, if register operand is desired, the [Rg] key should be pressed. Pressing [Rg] continously cycles thru the available registers.
+        At operand edit stage, the pressing numeric keys 0..F allows for direct input of vales, 
+		if register operand is desired, the [Rg] key should be pressed. 
+		Pressing [Rg] continously cycles thru the available registers.
         Suppose we want to complete that last commnd to make "add.b #0x0123, r10";
 
           Press Keys                Displays   Notes
@@ -438,9 +468,12 @@ Parts / Bill of Materials
           [Rg][Rg][Rg]              ra         press [Rg] 3 times to advance to R10/Ra
                 (*note R10 register is represented as Ra)
 
-        For some two operand commands, they may not be enough room to display everthing, in such cases, the monitor will advance to a second page of display. User can use the '0' key to toggle page 1 and page 2 of the command.
+        For some two operand commands, they may not be enough room to display everthing, in such cases, 
+		the monitor will advance to a second page of display. 
+		User can use the '0' key to toggle page 1 and page 2 of the command.
 
-        Indirect and other addressing modes, are handles with the [Ad] key and is used as a "modifier" when entering operands.
+        Indirect and other addressing modes, 
+		are handles with the [Ad] key and is used as a "modifier" when entering operands.
         Suppose instead of "add #0x0123, r10" we want to do "add @0x0123, @r10";
 
           Press Keys                Displays   Notes
@@ -455,9 +488,12 @@ Parts / Bill of Materials
           [Ad]                      ra.        toggle addressing mode
                 (*note a "dot" after the operand indicates indirect addressing)
 
-        Indirect address w/ increment was implemented but eventually was taken out as it's seldom used and is really confusing on our tiny display. Readers interested can study the source code to redo it.
+        Indirect address w/ increment was implemented but eventually was taken out as it's seldom used 
+		and is really confusing on our tiny display. Readers interested can study the source code to redo it.
 
-        Jumps, has special treatments. Jumps always uses plus or minus relative addressing. When entering relative position of jumps, we use the [<<] and [>>] keys, which are the same as the [Md] and [Rg] keys.
+        Jumps, has special treatments. Jumps always uses plus or minus relative addressing. 
+		When entering relative position of jumps, we use the [<<] and [>>] keys, 
+		which are the same as the [Md] and [Rg] keys.
 
         Suppose we want to do "jz $-10"
 
@@ -467,9 +503,10 @@ Parts / Bill of Materials
           [F]...                    jz   -2    press [F] until we reach jz
           [Rg]..                    jz   -10   press [Rg] 4 times until we get -10
                 (*note key [Md] goes +2 each pressing)
+```
+### Example Assembler Programs
 
-:h3 Example Assembler Programs
-
+```
         0xe000 display example
                 prints "paradiso", "ui boost"
                 wait for key, prints key code
@@ -511,26 +548,36 @@ Parts / Bill of Materials
                   don't put anything in bank 5 (0xe5000)
 
         There are also two LMC pre-load programs (adder + counter) in the system.
+```
 
 
+### Little Man Computer
 
-:h3 Little Man Computer
 
-:v HNK9imVcz_E
+<iframe width="560" height="315" src="https://www.youtube.com/embed/HNK9imVcz_E" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+<br><br>
 
-:h3 Lunar Lander
+### Lunar Lander
 
-:v TbD8qBQw4qk
 
-:h3 Related Files
+<iframe width="560" height="315" src="https://www.youtube.com/embed/TbD8qBQw4qk" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+<br><br>
 
-s(D55524_5x10.zip is the production ready seeedstudio compliance file package)
-s(ez430trainer.tgz are source files in tgz format ,tarred, gzipped)
-(*) s(this project can only be built with msp430gcc ,cygwin or linux)
-source code now reside in l(my github repository;https://github.com/simpleavr/old_projects/ez_trainer)
+### Related Files
+
+
+~~D55524_5x10.zip is the production ready seeedstudio compliance file package~~
+
+~~ez430trainer.tgz are source files in tgz format ,tarred, gzipped~~
+
+(*) ~~this project can only be built with msp430gcc ,cygwin or linux~~
+
+source code now reside in [my github repository](https://github.com/simpleavr/old_projects/tree/master/ez_trainer)
+
 
 lmc.c contains only the LMC machine (compiles on mps430gcc and CCSV4), for CCS, create a lmc project and rename lmc.c to main.c to build
-        
- 
-:
-:
+
+
+
+
+

@@ -1,66 +1,89 @@
 
-:h2 TI LaunchBread
+## TI LaunchBread
 
-R([November, 2010]) Initial write-up.
-R([April, 2015]) This page was created in 2010. Many things have changed. The procedures to setup a working environment is outdate and there are ways that is simpler and easier to setup the LP development environment under Linux.
 
-b(Breardboard Development and Programming with the TI msp430 Value Line MCUs.)
+`[November, 2010]` Initial write-up.
 
-:v BWRTcx5swME
+`[April, 2015]` This page was created in 2010. Many things have changed. The procedures to setup a working environment is outdate and there are ways that is simpler and easier to setup the LP development environment under Linux.
 
-:h3 Description
+
+**Breardboard Development and Programming with the TI msp430 Value Line MCUs.**
+
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/BWRTcx5swME" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+<br><br>
+
+### Description
+
 
 This is a tryout project based on the ti MSP430G2211. The project objective is to gain understanding on the basic io of this new mcu, tries out the toolchain under linux, etc.
 
+
 The launchpad i got looks like this.
 
-:i launchbread.jpg
 
-Ti launchpad info link l(here;http://processors.wiki.ti.com/index.php/MSP430_LaunchPad_%28MSP-EXP430G2%29?DCMP=launchpad&HQS=Other+OT+launchpadwiki)
+ <img src="images/launchbread.jpg" alt="IMG" style="border:2px solid #555;margin-right:10px" width="360"/>
 
-I acquired a ti lauchpad one week after it was launched. Since i work solely on a linux environment, it is natural to try and make it work under linix. s(Unfortunately the launchpad has a different UIF firmware and mspdebug has not yet to support it) (as of july 7th). After combing through the datasheets it appears the mcu is very close to the F2013, in that they appears to share the same memory map and register layouts.
+
+Ti launchpad info link [here](http://processors.wiki.ti.com/index.php/MSP430_LaunchPad_%28MSP-EXP430G2%29?DCMP=launchpad&HQS=Other+OT+launchpadwiki)
+
+
+I acquired a ti lauchpad one week after it was launched. Since i work solely on a linux environment, it is natural to try and make it work under linix. ~~Unfortunately the launchpad has a different UIF firmware and mspdebug has not yet to support it~~ (as of july 7th). After combing through the datasheets it appears the mcu is very close to the F2013, in that they appears to share the same memory map and register layouts.
+
 
 After visiting the losinggeneration site and trying, i realized that the launchpad had been working right out of the box with mspdebug all along, i was not able to get it working was due to usb driver problems. Still after connecting the launchpad, i can only run one mspdebug session. If i want to connect again i need to detach / re-attach launchpad. But the flash uploading, debugging via sbw all works fine now.
 
+
 So i did the natural thing and create this "launchbread" (like breadboard arduino / breaduino) and use the ez430 usb dongle for programming and debuging.
+
 
 In this setup i assembly the project w/ the extra G2211 mcu from the launchpad kit, i tried the G2231 and it works as well.
 
+
 The ez430 doggle i got has the 4-pin 0.05in pitch connector and from studying the schematics we have;
 
-:ul
-pin1 as VCC, (header P1)
-pin2 as SBWCLK, (header P11)
-pin3 as SBWTDIO, (header P10) RST
-pin4 as GND, (header P14)
+
+- pin1 as VCC, (header P1)
+- pin2 as SBWCLK, (header P11)
+- pin3 as SBWTDIO, (header P10) RST
+- pin4 as GND, (header P14)
 
 We can directly hook this up on a breadboard setting. As the 0.05in pitched headers are hard to find, i sacrificed daughter F2012 board (3 for $10, i prey away the mcu and added 0.1in headers) so that i can have a solid 0.1in header connection. The provided header on the F2012 board has pin layout exactly as the targe G2xx device
+
 
 The following shows an original F2012 daughter board and the one that had the MCU ripped off with 2x7 male header installed.
 
 
-:i launchbread04.jpg
+
+ <img src="images/launchbread04.jpg" alt="IMG" style="border:2px solid #555;margin-right:10px" width="360"/>
+
 
 The whole hookup look like this with the EZ430-FET and jumper wires;
 
-:i launchbread03.jpg
+
+ <img src="images/launchbread03.jpg" alt="IMG" style="border:2px solid #555;margin-right:10px" width="360"/>
 
 
-TI EZ430-F2013 info link l(here;http://processors.wiki.ti.com/index.php?title=EZ430-F2013)
+
+TI EZ430-F2013 info link [here](http://processors.wiki.ti.com/index.php?title=EZ430-F2013)
 
 
-:h3 Toolchain setup
 
-My environment is ubuntu 10.04 lucid. We will need msp430-gcc4 and mspdebug. There is already a tutorial covering this which i had followed and worked well. s(The mylightswitch.com tutorial can be found here)
+### Toolchain setup
 
 
-:h3 Mspdebug Session
+My environment is ubuntu 10.04 lucid. We will need msp430-gcc4 and mspdebug. There is already a tutorial covering this which i had followed and worked well. ~~The mylightswitch.com tutorial can be found here~~
+
+
+
+### Mspdebug Session
+
 
 With the header / jumpers ready, i fired up mspdebug and got the followng;
 
-:pre
-:p
-:code
+
+
+```
 chrisc@t61:~/ti/ez430/rgb> mspdebug -d /dev/ttyUSB0 uif
 MSPDebug version 0.9 - debugging tool for MSP430 MCUs
 Copyright (C) 2009, 2010 Daniel Beer <daniel@tortek.co.nz>
@@ -74,14 +97,14 @@ Configured for Spy-Bi-Wire
 Set Vcc: 3000 mV
 Device: MSP430F20x1
 Code memory starts at 0xf800
-:
+```
 
 so afterall it is recognized as a MSP430F20x1 device. but does it programs? i then wrote a simple sketch (source code below) to try out basic ios and the timer. programming worked fine, step worked, run worked.
 
 
-:pre
-:p
-:code
+
+
+```
 mspdebug -d /dev/ttyUSB0 uif "prog $PRG.elf"
 .
 .
@@ -105,20 +128,19 @@ Writing  32 bytes to ffe0...
 (mspdebug) run
 Running. Press Ctrl+C to interrupt...
 
-:
+```
 
-:h3 RGB LED Source
-
-:ul
-Use Timer to implement software pwm @ 25% duty (save resistors)
-Layout button and led so that i don't need jumpers (save jumpers)
-Press button to cycle thru the rgb combinations (8 of them)
-compensate individual color led brightness by turning them off at different rates (doesn't seem to work)
+### RGB LED Source
 
 
-:pre
-:p
-:code
+- Use Timer to implement software pwm @ 25% duty (save resistors)
+- Layout button and led so that i don't need jumpers (save jumpers)
+- Press button to cycle thru the rgb combinations (8 of them)
+- compensate individual color led brightness by turning them off at different rates (doesn't seem to work)
+
+
+
+```
  //******************************************************************************
 //  MSP430F20xx Demo - RGB LED
 //
@@ -142,8 +164,6 @@ compensate individual color led brightness by turning them off at different rate
 //  Built with msp430-gcc, flash via mspdebug
 //******************************************************************************
 
-#include "signal.h"
-#include  <msp430x20x3.h>
 
 volatile unsigned int clicks=0;
 volatile unsigned int ticks=0;
@@ -162,7 +182,7 @@ void main(void) {
     unsigned int rgb=0x00;
     unsigned int button=0;
 
-    _BIS_SR(GIE);
+    _BIS_S`GIE`;
     while (1) {
         if (P2IN&0x80) {
             if (button > 5) {        // button released
@@ -193,50 +213,58 @@ interrupt(TIMERA0_VECTOR) Timer_A(void) {
         ticks++;
     }//else
 }
-:
+```
 
 The above sketch is built with
 
-:pre
-:p
-:code
+
+
+```
 /opt/msp430-gcc-4.4.3/bin/msp430-gcc -Os -mmcu=msp430x2012 -o rgb.elf rgb.c 
-:
+```
 
 And uploaded with
 
-:pre
-:p
-:code
+
+
+```
 mspdebug -d /dev/ttyUSB0 uif "prog rgb.elf"
-:
+```
 
-:h3 Breadboard Layout
+### Breadboard Layout
 
 
-:i rgb_bb.png
+
+ <img src="images/rgb_bb.png" alt="IMG" style="border:2px solid #555;margin-right:10px" width="360"/>
+
 
 If you run it off battery, make sure your RST line is connected to VCC
 
 
-:h3 Schematic
 
-:i rgb_schem.png
+### Schematic
+
+
+ <img src="images/rgb_schem.png" alt="IMG" style="border:2px solid #555;margin-right:10px" width="360"/>
+
 
 
 Note again the following pin mappings;
-:ul
-Pin1 as VCC, (header P1)
-Pin2 as SBWCLK, (header P11)
-Pin3 as SBWTDIO, (header P10) RST
-Pin4 as GND, (header P14)
+
+- Pin1 as VCC, (header P1)
+- Pin2 as SBWCLK, (header P11)
+- Pin3 as SBWTDIO, (header P10) RST
+- Pin4 as GND, (header P14)
 
 
 
-:h3 Physical Hookup
+### Physical Hookup
 
 
-:i rgb_hookup.jpg
+
+ <img src="images/rgb_hookup.jpg" alt="IMG" style="border:2px solid #555;margin-right:10px" width="360"/>
+
 
 aGain, if you run it off battery, make sure your RST line is connected to VCC
+
 
